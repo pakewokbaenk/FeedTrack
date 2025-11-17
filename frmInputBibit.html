@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Data Bibit - SeedTrack (Aplikasi Pemantauan Distribusi Bibit) </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Flatpickr CSS for DateTime Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: white;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-header h4 {
+            color: white;
+            font-size: 18px;
+            margin: 10px 0 5px 0;
+        }
+
+        .sidebar-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .sidebar-menu i {
+            width: 20px;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            margin: 0;
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
+        .form-label {
+            color: #555;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-label .required {
+            color: #dc3545;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        /* DateTime Picker Input Group */
+        .datetime-input-group {
+            position: relative;
+        }
+
+        .datetime-input-group .input-group-text {
+            background: #667eea;
+            color: white;
+            border: 2px solid #667eea;
+            border-radius: 10px 0 0 10px;
+        }
+
+        .datetime-input-group .form-control {
+            border-radius: 0 10px 10px 0;
+            padding-left: 15px;
+        }
+
+        /* Map Container */
+        #map {
+            height: 400px;
+            width: 100%;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .map-controls {
+            margin: 10px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-map {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-map:hover {
+            background: #5569d0;
+            transform: translateY(-2px);
+        }
+
+        .coordinates-box {
+            background: #f8f9fa;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .coord-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+
+        .coord-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .coord-value {
+            color: #333;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Map Instructions */
+        .map-instructions {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .map-instructions i {
+            color: #667eea;
+            margin-right: 5px;
+        }
+
+        /* Buttons */
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-custom {
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary-custom {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary-custom:hover {
+            background: #5a6268;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+            }
+
+            .btn-custom {
+                width: 100%;
+            }
+
+            #map {
+                height: 300px;
+            }
+        }
+
+        /* Toggle Button for Mobile */
+        .sidebar-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Toggle Button (Mobile) -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%23667eea'/%3E%3Ctext x='50' y='55' text-anchor='middle' font-size='20' fill='white'%3ESI%3C/text%3E%3C/svg%3E" alt="Logo">
+            <h4>SeedTrack</h4>
+            <p>Operator Panel</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="frmInputBibit.html" class="active">
+                    <i class="fas fa-seedling"></i>
+                    <span>Input Data Bibit</span>
+                </a>
+            </li>
+            <li>
+                <a href="frmListDistribusiBibit.html">
+                    <i class="fas fa-list"></i>
+                    <span>Data Distribusi</span>
+                </a>
+            </li>
+            <li>
+                <a href="frmUpdateProgress.html">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Update Progress</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-user"></i>
+                    <span>Profil</span>
+                </a>
+            </li>
+            <li>
+                <a href="frmLogin.html">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Keluar</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-seedling" style="color: #667eea; margin-right: 10px;"></i>
+                Input Data Distribusi Bibit
+            </h1>
+            <div class="user-info">
+                <span>Operator: <strong>John Doe</strong></span>
+                <div class="user-avatar"><img src="profilePic.png" alt="Profile" class="user-avatar"></div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form id="formBibit">
+            <!-- Section 1: Data Bibit -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-seedling"></i>
+                        Data Bibit
+                    </h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Kode Bibit <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-control" placeholder="Contoh: BIB-2024-001" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Jenis Bibit <span class="required">*</span>
+                            </label>
+                            <select class="form-select" required>
+                                <option value="">-- Pilih Jenis Bibit --</option>
+                                <option value="pangan">Tanaman Pangan</option>
+                                <option value="hortikultura">Hortikultura</option>
+                                <option value="perkebunan">Perkebunan</option>
+                                <option value="kehutanan">Kehutanan</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Nama Bibit <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-control" placeholder="Contoh: Padi Ciherang" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">
+                                Jumlah <span class="required">*</span>
+                            </label>
+                            <input type="number" class="form-control" placeholder="0" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">
+                                Satuan <span class="required">*</span>
+                            </label>
+                            <select class="form-select" required>
+                                <option value="">-- Pilih --</option>
+                                <option value="batang">Batang</option>
+                                <option value="polybag">Polybag</option>
+                                <option value="kg">Kilogram</option>
+                                <option value="bungkus">Bungkus</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Sumber Bibit</label>
+                            <input type="text" class="form-control" placeholder="Contoh: Dinas Pertanian">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tanggal Penanaman</label>
+                            <input type="date" class="form-control" placeholder="Contoh: 11 Januari 2026">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Lokasi Penanaman -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Lokasi Penanaman
+                    </h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Nama Dusun <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-control" placeholder="Masukkan nama dusun" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Kelurahan/Desa <span class="required">*</span>
+                            </label>
+                            <select class="form-select" required>
+                                <option value="">-- Pilih Kelurahan/Desa --</option>
+                                <option value="1">Desa Labuhan Sumbawa</option>
+                                <option value="2">Desa Bugis</option>
+                                <option value="3">Desa Brang Bara</option>
+                                <option value="4">Desa Kerato</option>
+                                <option value="5">Desa Lempeh</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Kecamatan <span class="required">*</span>
+                            </label>
+                            <select class="form-select" required>
+                                <option value="">-- Pilih Kecamatan --</option>
+                                <option value="1">Sumbawa</option>
+                                <option value="2">Labuhan Badas</option>
+                                <option value="3">Unter Iwes</option>
+                                <option value="4">Moyohilir</option>
+                                <option value="5">Moyohulu</option>
+                                <option value="6">Ropang</option>
+                                <option value="7">Lenangguar</option>
+                                <option value="8">Lantung</option>
+                                <option value="9">Lape</option>
+                                <option value="10">Lopok</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                Kabupaten <span class="required">*</span>
+                            </label>
+                            <input type="text" class="form-control" value="Sumbawa" readonly>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Alamat Lengkap</label>
+                            <textarea class="form-control" rows="3" placeholder="Masukkan alamat lengkap lokasi penanaman"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section -->
+
+                <!-- Map Section -->
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <label class="form-label">Pin Lokasi di Peta <span class="required">*</span></label>
+                        <div class="map-controls">
+                            <button type="button" class="btn-map" onclick="getLocation()">
+                                <i class="fas fa-location-arrow"></i> Gunakan Lokasi Saya
+                            </button>
+                            <button type="button" class="btn-map" onclick="searchLocation()">
+                                <i class="fas fa-search"></i> Cari Lokasi
+                            </button>
+                        </div>
+                        <div id="map"></div>
+                        <div class="coordinates-box">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>Latitude:</strong> <span id="latitude">-8.504190</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Longitude:</strong> <span id="longitude">117.420403</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
