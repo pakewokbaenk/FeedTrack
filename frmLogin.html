@@ -263,6 +263,15 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label class="form-label">Login Sebagai</label>
+                        <select class="form-control" id="userRole" required>
+                            <option value="operator">Operator</option>
+                            <option value="admin">Admin</option>
+                            <option value="pimpinan">Pimpinan</option>
+                        </select>
+                    </div>
+
                     <div class="remember-forgot">
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="remember">
@@ -306,8 +315,25 @@
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             // Add your login logic here
-            console.log('Login submitted');
-            window.location.href = "frmListDistribusiBibit.html";
+            const role = document.getElementById('userRole').value;
+
+            // Login validation logic (this can be extended)
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === "demo" && password === "1234") { // Example condition
+                // Redirection based on role
+                if (role === "operator") {
+                    window.location.href = "frmListDistribusiBibit.html";
+                } else if (role === "admin") {
+                    window.location.href = "frmDaftarPengguna.html";
+                } else if (role === "pimpinan") {
+                    window.location.href = "#"; // Pimpinan page (replace with actual link)
+                }
+            } else {
+                document.getElementById('errorAlert').classList.remove('d-none');
+                document.getElementById('errorMessage').innerText = "Username atau password salah!";
+            }
         });
     </script>
 </body>
